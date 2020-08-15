@@ -8,12 +8,15 @@ function submitIssue(e) {
   const id = Math.floor(Math.random() * 100000000) + '';
   const status = 'Open';
 
+  const dateTime = new Date().toLocaleString(); // added
+
   const issue = {
     id,
     description,
     severity,
     assignedTo,
-    status
+    status,
+    dateTime // added
   };
   let issues = [];
   if (localStorage.getItem('issues')) {
@@ -37,11 +40,13 @@ const closeIssue = id => {
 }
 
 const deleteIssue = id => {
-  const issues = JSON.parse(localStorage.getItem('issues'));
-  const remainingIssues = issues.filter(issue => issue.id != id); // issue.id !== id
+  if (confirm("Are You Sure?")) {
+    const issues = JSON.parse(localStorage.getItem('issues'));
+    const remainingIssues = issues.filter(issue => issue.id != id); // issue.id !== id
 
-  localStorage.setItem('issues', JSON.stringify(remainingIssues));
-  fetchIssues(); // before it was not here
+    localStorage.setItem('issues', JSON.stringify(remainingIssues));
+    fetchIssues(); // before it was missing
+  }
 }
 
 const fetchIssues = () => {
@@ -57,17 +62,23 @@ const fetchIssues = () => {
   const issuesList = document.getElementById('issuesList');
   issuesList.innerHTML = '';
 
+
+
   for (var i = 0; i < issues.length; i++) {
     const {
       id,
       description,
       severity,
       assignedTo,
-      status
+      status,
+      dateTime
     } = issues[i];
+
+
 
     issuesList.innerHTML += `<div class="well">
                               <h6>Issue ID: ${id} </h6>
+                              <h6>Timestamp: ${dateTime}</h6>
                               <p><span class="issue-status"> ${status} </span></p>
                               <h3 class="issue-desc"> ${description}</h3>
                               <p><span class="glyphicon glyphicon-time"></span> ${severity}</p>
