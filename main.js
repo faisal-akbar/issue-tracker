@@ -45,7 +45,15 @@ const deleteIssue = id => {
 }
 
 const fetchIssues = () => {
-  const issues = JSON.parse(localStorage.getItem('issues'));
+  let issues;
+  if (localStorage.getItem('issues') === null) {
+    issues = [];
+  } else {
+    issues = JSON.parse(localStorage.getItem('issues'));
+  }
+
+  // const issues = JSON.parse(localStorage.getItem('issues')); // before null check condition was missing
+
   const issuesList = document.getElementById('issuesList');
   issuesList.innerHTML = '';
 
