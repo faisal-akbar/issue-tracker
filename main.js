@@ -1,4 +1,6 @@
-document.getElementById('issueInputForm').addEventListener('submit', printIssue);
+document
+  .getElementById('issueInputForm')
+  .addEventListener('submit', printIssue);
 
 function submitIssue() {
   const getInputValue = (id) => document.getElementById(id).value;
@@ -34,8 +36,10 @@ const closeIssue = (id) => {
   const issues = JSON.parse(localStorage.getItem('issues'));
   const currentIssue = issues.find((issue) => issue.id == id); // before ===
   currentIssue.status = 'Closed';
+  currentIssue.description = currentIssue.description.strike();
   localStorage.setItem('issues', JSON.stringify(issues));
   fetchIssues();
+
 };
 
 const deleteIssue = (id) => {
@@ -90,16 +94,14 @@ const fetchIssues = () => {
 
     // <p><span class="issue-status label label-info"> ${status} </span></p>
 
-    // Strike line and status badge for closed issue
-    if (issues[i].status == 'Closed') {
-      const closedIssueDesc = document.querySelector('.issue-desc');
-      closedIssueDesc.className = 'strike-line';
+    // status badge for closed issue
+    if (status == 'Closed') {
       const closedIssueStatus = document.querySelector('.issue-status');
       closedIssueStatus.className = 'label badge-closed';
     }
 
     // status badge for open issue
-    if (issues[i].status == 'Open') {
+    if (status == 'Open') {
       const openIssueStatus = document.querySelector('.issue-status');
       openIssueStatus.className = 'label badge-open';
     }
@@ -119,7 +121,6 @@ const fetchIssues = () => {
     issueCount.innerText = statusFilter.length;
   }
 };
-
 
 // Added notification functionality, if no validation is success call submitIssue function
 function printIssue(e) {
@@ -141,7 +142,6 @@ function printIssue(e) {
   e.preventDefault();
 }
 
-
 function alertNotification(Id, value) {
   document.getElementById(Id).style.display = value;
 }
@@ -150,7 +150,6 @@ function clearNotification() {
   alertNotification('empty-desc', 'none');
   alertNotification('empty-assign', 'none');
   alertNotification('empty-both', 'none');
-
 }
 
 //  // Closed issue count
