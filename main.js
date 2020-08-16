@@ -1,7 +1,7 @@
-document.getElementById('issueInputForm').addEventListener('submit', submitIssue);
+document.getElementById('issueInputForm').addEventListener('submit', printIssue);
 
 function submitIssue(e) {
-  const getInputValue = id => document.getElementById(id).value;
+  const getInputValue = (id) => document.getElementById(id).value;
   const description = getInputValue('issueDescription');
   const severity = getInputValue('issueSeverity');
   const assignedTo = getInputValue('issueAssignedTo');
@@ -16,7 +16,7 @@ function submitIssue(e) {
     severity,
     assignedTo,
     status,
-    dateTime // added
+    dateTime, // added
   };
   let issues = [];
   if (localStorage.getItem('issues')) {
@@ -30,24 +30,23 @@ function submitIssue(e) {
   e.preventDefault();
 }
 
-const closeIssue = id => {
+const closeIssue = (id) => {
   const issues = JSON.parse(localStorage.getItem('issues'));
-  const currentIssue = issues.find(issue => issue.id == id); // before ===
+  const currentIssue = issues.find((issue) => issue.id == id); // before ===
   currentIssue.status = 'Closed';
   localStorage.setItem('issues', JSON.stringify(issues));
   fetchIssues();
+};
 
-}
-
-const deleteIssue = id => {
-  if (confirm("Are You Sure?")) {
+const deleteIssue = (id) => {
+  if (confirm('Are You Sure?')) {
     const issues = JSON.parse(localStorage.getItem('issues'));
-    const remainingIssues = issues.filter(issue => issue.id != id); // issue.id !== id
+    const remainingIssues = issues.filter((issue) => issue.id != id); // issue.id !== id
 
     localStorage.setItem('issues', JSON.stringify(remainingIssues));
     fetchIssues(); // before it was missing
   }
-}
+};
 
 const fetchIssues = () => {
   let issues;
@@ -62,8 +61,6 @@ const fetchIssues = () => {
   const issuesList = document.getElementById('issuesList');
   issuesList.innerHTML = '';
 
-
-
   for (var i = 0; i < issues.length; i++) {
     const {
       id,
@@ -72,9 +69,9 @@ const fetchIssues = () => {
       assignedTo,
       status,
       dateTime
-    } = issues[i];
-
-
+    } = issues[
+      i
+    ];
 
     issuesList.innerHTML += `<div class="well">
                               <h6>Issue ID: ${id} </h6>
@@ -95,20 +92,18 @@ const fetchIssues = () => {
 
     // Strike line and status badge for closed issue
     if (issues[i].status == 'Closed') {
-      const closedIssueDesc = document.querySelector(".issue-desc");
+      const closedIssueDesc = document.querySelector('.issue-desc');
       closedIssueDesc.className = 'strike-line';
-      const closedIssueStatus = document.querySelector(".issue-status");
+      const closedIssueStatus = document.querySelector('.issue-status');
       closedIssueStatus.className = 'label badge-closed';
     }
 
     // status badge for open issue
     if (issues[i].status == 'Open') {
-      const openIssueStatus = document.querySelector(".issue-status");
+      const openIssueStatus = document.querySelector('.issue-status');
       openIssueStatus.className = 'label badge-open';
     }
-
   }
-
 
   // Total issue
   const totalIssue = document.getElementById('total-issue');
@@ -120,14 +115,42 @@ const fetchIssues = () => {
   // get open issue and closed issue count
   function getCount(id, issueStatus) {
     const issueCount = document.getElementById(id);
-    const statusFilter = issues.filter(issue => issue.status == issueStatus);
+    const statusFilter = issues.filter((issue) => issue.status == issueStatus);
     issueCount.innerText = statusFilter.length;
   }
+};
 
+
+// Added notification functionality, if no validation is success call submitIssue function
+function printIssue() {
+  const issueDesc = document.getElementById('issueDescription').value;
+  const issueAssignedTo = document.getElementById('issueAssignedTo').value;
+
+  if (issueDesc == '' && issueAssignedTo == '') {
+    alertNotification('empty-both', 'block');
+    setTimeout(clearNotification, 3000);
+  } else if (issueDesc == '') {
+    alertNotification('empty-desc', 'block');
+    setTimeout(clearNotification, 3000);
+  } else if (issueAssignedTo == '') {
+    alertNotification('empty-assign', 'block');
+    setTimeout(clearNotification, 3000);
+  } else {
+    submitIssue();
+  }
 }
 
 
+function alertNotification(Id, value) {
+  document.getElementById(Id).style.display = value;
+}
 
+function clearNotification() {
+  alertNotification('empty-desc', 'none');
+  alertNotification('empty-assign', 'none');
+  alertNotification('empty-both', 'none');
+
+}
 
 //  // Closed issue count
 //  const closedIssue = document.getElementById('closed-issue');
