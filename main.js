@@ -1,6 +1,6 @@
 document.getElementById('issueInputForm').addEventListener('submit', printIssue);
 
-function submitIssue(e) {
+function submitIssue() {
   const getInputValue = (id) => document.getElementById(id).value;
   const description = getInputValue('issueDescription');
   const severity = getInputValue('issueSeverity');
@@ -27,7 +27,7 @@ function submitIssue(e) {
 
   document.getElementById('issueInputForm').reset();
   fetchIssues();
-  e.preventDefault();
+  // e.preventDefault();
 }
 
 const closeIssue = (id) => {
@@ -122,7 +122,7 @@ const fetchIssues = () => {
 
 
 // Added notification functionality, if no validation is success call submitIssue function
-function printIssue() {
+function printIssue(e) {
   const issueDesc = document.getElementById('issueDescription').value;
   const issueAssignedTo = document.getElementById('issueAssignedTo').value;
 
@@ -136,8 +136,9 @@ function printIssue() {
     alertNotification('empty-assign', 'block');
     setTimeout(clearNotification, 3000);
   } else {
-    submitIssue();
+    submitIssue(e);
   }
+  e.preventDefault();
 }
 
 
